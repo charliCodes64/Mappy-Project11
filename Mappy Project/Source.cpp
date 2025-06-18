@@ -4,6 +4,8 @@
 #include "SpriteSheet.h"
 #include "mappy_A5.h"
 #include <iostream>
+#include <sstream>
+
 using namespace std;
 
 int collided(int x, int y);  //Tile Collision
@@ -15,21 +17,24 @@ int main(void)
 	bool keys[] = {false, false, false, false, false};
 	enum KEYS{UP, DOWN, LEFT, RIGHT, SPACE};
 	//variables
+	bool winner = false;
 	bool done = false;
 	bool render = false;
+	bool showWinScreen = false;
 	//Player Variable
 	Sprite player;
 	const int JUMPIT=1600;
 	int jump = JUMPIT;
-
+	int secondsElapsed = 0;
+ 
 
 
 	//allegro variable
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer;
-
-	//program init
+	ALLEGRO_TIMER* game_timer;
+ 	//program init
 	if(!al_init())										//initialize Allegro
 		return -1;
 
@@ -42,6 +47,10 @@ int main(void)
 	al_install_keyboard();
 	al_init_image_addon();
 	al_init_primitives_addon();
+	al_init_font_addon();
+	al_init_ttf_addon();
+
+	ALLEGRO_FONT* font24 = al_load_font("GoldenAge.ttf", 24, 2);
 
 	player.InitSprites(WIDTH,HEIGHT);
 
@@ -52,11 +61,14 @@ int main(void)
 
 	event_queue = al_create_event_queue();
 	timer = al_create_timer(1.0 / 60);
+	game_timer = al_create_timer(1.0);
 
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	al_register_event_source(event_queue, al_get_timer_event_source(game_timer));
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 
 	al_start_timer(timer);
+	al_start_timer(game_timer);
 	//draw the background tiles
 	MapDrawBG(xOff,yOff, 0, 0, WIDTH-1, HEIGHT-1);
 
@@ -65,27 +77,38 @@ int main(void)
 	player.DrawSprites(0,0);
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0,0,0));
+
+    std:cout << "try4" << std::endl;
 	while(!done)
 	{
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(ev.type == ALLEGRO_EVENT_TIMER)
 		{
-			render = true;
-			if(keys[UP])
-				;
-			else if(keys[DOWN])
-				;
-			else if(keys[LEFT])
-				player.UpdateSprites(WIDTH,HEIGHT,0);
-			else if(keys[RIGHT])
-				player.UpdateSprites(WIDTH,HEIGHT,1);
-			else
-				player.UpdateSprites(WIDTH,HEIGHT,2);
-			if (player.CollisionEndBlock())
-				cout<<"Hit an End Block\n";
-			render = true;
+			if (ev.any.source == al_get_timer_event_source(game_timer))
+			{
+				if (!winner)
+					secondsElapsed++;
+			}
+ 			
+				render = true;
+				if (keys[UP])
+					;
+				else if (keys[DOWN])
+					;
+				else if (keys[LEFT])
+					player.UpdateSprites(WIDTH, HEIGHT, 0);
+				else if (keys[RIGHT])
+					player.UpdateSprites(WIDTH, HEIGHT, 1);
+				else
+					player.UpdateSprites(WIDTH, HEIGHT, 2);
 
+				if (player.CollisionEndBlock()) {
+					cout << "Hit an End Block\n";
+					showWinScreen = true;
+					winner = true;
+				}
+			
 		}
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 		{
@@ -157,10 +180,16 @@ int main(void)
 				yOff = 0;
 			if (yOff > (mapheight * mapblockheight - HEIGHT)) 
 				yOff = mapheight * mapblockheight - HEIGHT;
+			if (winner == true) {
+				std::string win = "You won in " + std::to_string(secondsElapsed) + " seconds7";
+				al_draw_text(font24, al_map_rgb(80, 125, 70), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTER, win.c_str());
+				al_flip_display();
+				al_rest(10);
+				done = true;
+			}
 
 			//draw the background tiles
 			MapDrawBG(xOff,yOff, 0, 0, WIDTH, HEIGHT);
-
 			//draw foreground tiles
 			MapDrawFG(xOff,yOff, 0, 0, WIDTH, HEIGHT, 0);
 			jump=player.jumping(jump,JUMPIT);

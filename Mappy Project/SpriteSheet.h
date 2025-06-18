@@ -36,5 +36,6 @@ private:
 	int animationRows;
 	int animationDirection;
 
+
 	ALLEGRO_BITMAP *image;
 };
