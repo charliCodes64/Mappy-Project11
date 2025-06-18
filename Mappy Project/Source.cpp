@@ -5,7 +5,7 @@
 #include "mappy_A5.h"
 #include <iostream>
 #include <sstream>
-
+//Charlton Infinger
 using namespace std;
 
 int collided(int x, int y);  //Tile Collision
@@ -20,8 +20,7 @@ int main(void)
 	bool winner = false;
 	bool done = false;
 	bool render = false;
-	bool showWinScreen = false;
-	//Player Variable
+ 	//Player Variable
 	Sprite player;
 	const int JUMPIT=1600;
 	int jump = JUMPIT;
@@ -103,10 +102,9 @@ int main(void)
 				else
 					player.UpdateSprites(WIDTH, HEIGHT, 2);
 
-				if (player.CollisionEndBlock()) {
+				if (player.CollisionEndBlock()) {//setting win to true
 					cout << "Hit an End Block\n";
-					showWinScreen = true;
-					winner = true;
+ 					winner = true;
 				}
 			
 		}
@@ -166,7 +164,7 @@ int main(void)
 		if(render && al_is_event_queue_empty(event_queue))
 		{
 			render = false;
-			//al_draw_filled_rectangle(0, 0, WIDTH, HEIGHT, al_map_rgb(50, 50, 100));
+			//al_draw_filled_rectangle(0, 0, WIDTH, HEIGHT, al_map_rgb(75, 80, 100));
 
 			//update the map scroll position
 			xOff = player.getX()+player.getWidth() - WIDTH/2 ;
@@ -188,8 +186,8 @@ int main(void)
 			MapDrawFG(xOff,yOff, 0, 0, WIDTH, HEIGHT, 0);
 			jump=player.jumping(jump,JUMPIT);
 			player.DrawSprites(xOff, yOff);
-			if (winner == true) {
-				std::string win = "You won in " + std::to_string(secondsElapsed) + " seconds17";
+			if (winner == true) {//win message 10sec delay
+				std::string win = "You won in " + std::to_string(secondsElapsed) + " seconds19";
 				al_draw_text(font24, al_map_rgb(80, 125, 70), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTER, win.c_str());
 				al_flip_display();
 				al_rest(10);
