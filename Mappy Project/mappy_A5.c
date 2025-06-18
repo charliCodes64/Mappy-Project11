@@ -555,7 +555,7 @@ BLKSTR * MapGetBlock (int x, int y)
 		mymappt += y*mapwidth;
 	}
 
-	if (*mymappt>=0)
+ 	if (*mymappt>=0)
 		return ((BLKSTR*) mapblockstrpt) + *mymappt;
 	else 
 	{ 

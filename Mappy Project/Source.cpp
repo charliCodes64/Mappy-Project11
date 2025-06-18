@@ -166,6 +166,7 @@ int main(void)
 		if(render && al_is_event_queue_empty(event_queue))
 		{
 			render = false;
+			//al_draw_filled_rectangle(0, 0, WIDTH, HEIGHT, al_map_rgb(50, 50, 100));
 
 			//update the map scroll position
 			xOff = player.getX()+player.getWidth() - WIDTH/2 ;
@@ -180,20 +181,20 @@ int main(void)
 				yOff = 0;
 			if (yOff > (mapheight * mapblockheight - HEIGHT)) 
 				yOff = mapheight * mapblockheight - HEIGHT;
-			if (winner == true) {
-				std::string win = "You won in " + std::to_string(secondsElapsed) + " seconds7";
-				al_draw_text(font24, al_map_rgb(80, 125, 70), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTER, win.c_str());
-				al_flip_display();
-				al_rest(10);
-				done = true;
-			}
-
+			MapUpdateAnims();
 			//draw the background tiles
 			MapDrawBG(xOff,yOff, 0, 0, WIDTH, HEIGHT);
 			//draw foreground tiles
 			MapDrawFG(xOff,yOff, 0, 0, WIDTH, HEIGHT, 0);
 			jump=player.jumping(jump,JUMPIT);
 			player.DrawSprites(xOff, yOff);
+			if (winner == true) {
+				std::string win = "You won in " + std::to_string(secondsElapsed) + " seconds17";
+				al_draw_text(font24, al_map_rgb(80, 125, 70), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTER, win.c_str());
+				al_flip_display();
+				al_rest(10);
+				done = true;
+			}
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0,0,0));
 		}

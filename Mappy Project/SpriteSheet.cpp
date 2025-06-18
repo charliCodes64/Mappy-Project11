@@ -100,6 +100,7 @@ void Sprite::DrawSprites(int xoffset, int yoffset)
 
 int Sprite::jumping(int jump, const int JUMPIT)
 {
+	int prevY;
 	//handle jumping
 	if (jump == JUMPIT) {
 		if (!collided(x + frameWidth / 2, y + frameHeight + 5))
@@ -107,9 +108,26 @@ int Sprite::jumping(int jump, const int JUMPIT)
 	}
 	else
 	{
+		prevY = y;
+
 		y -= jump / 3;
 		jump--;
-		curFrame = 0;
+
+		//preventing jumping above the top of the screen y
+		if (y < 0) {
+			y = 0;
+			jump = 0; 
+		}
+
+		if (jump == JUMPIT - 1) {
+			curFrame = 8;
+		}
+		else if (y < prevY) {
+			curFrame = 9;
+		}
+		else if (y >= prevY) {
+			curFrame = 10;
+		}
 	}
 
 	if (jump < 0)
@@ -117,6 +135,7 @@ int Sprite::jumping(int jump, const int JUMPIT)
 		if (collided(x + frameWidth / 2, y + frameHeight))
 		{
 			jump = JUMPIT;
+			curFrame = 11;
 			while (collided(x + frameWidth / 2, y + frameHeight))
 			{
 				y -= 3;
